@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const User = require('../users/users-model.js')
+const Users = require('../users/users-model.js')
 const bcrypt =require('bcrypt')
 
 router.post('/register', (req, res) =>{
@@ -19,7 +19,12 @@ router.post("/login", (req, res) =>{
     Users.findBy({ username }).first()
     .then(user => {
         if (user && bcrypt.compareSync(password, user.password)){
-            req.sessionuser = user
+            req.session.user = user
+            res.status(200).json({message: 'welcome to the jungle, ' + username })
+        } else {
+            res.status(401).json({ message: 'wrong credentials' })
         }
     })   
 })
+
+module.exports = router
